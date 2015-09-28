@@ -1,1 +1,4 @@
-SailsSample/node_modules/
+sails-typescript-sample/node_modules/
+typeframework-typescript-sample/node_modules/
+typeframework-typescript-sample/.build/
+typeframework-typescript-sample/.tscache/
