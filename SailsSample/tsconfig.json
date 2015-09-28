@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+<<<<<<< HEAD
         "target": "es5",
         "module": "commonjs",
         "sourceMap": true
@@ -16,3 +17,10 @@
 
 }
 
+=======
+        "target": "ES5",
+        "module": "commonjs",
+        "sourceMap": false
+    }
+}
+>>>>>>> mod config
