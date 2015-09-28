@@ -1,4 +1,83 @@
-<div class="jumbotron">
-    <h1>Welcome to TypeFramework</h1>
-    <p class="lead">Congratulations! You've just created a new TypeFramework application.</p>
+<div ng-controller="TodoCtrl">
+    <table class="table table-bordered">
+        <tr>
+            <td colspan="3">
+                <form ng-submit="add()">
+                    <input type="text" ng-model="newTodo" class="form-control" placeholder="What needs to be done?" autofocus />
+                </form>
+            </td>
+        </tr>
+        <tr ng-repeat="todo in todos" class="todo" ng-class="{completed: todo.completed}">
+            <td class="status"><i class="fa" ng-class="{'fa-square-o': !todo.completed, 'fa-check-square-o': todo.completed}" ng-click="mark(todo)"></i></td>
+            <td>{{todo.title}}</td>
+            <td class="delete"><i class="fa fa-times" ng-click="delete(todo)"></i></td>
+        </tr>
+    </table>
 </div>
+
+<%- contentFor('header') %>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module('app', []);
+    app.controller('TodoCtrl', ['$scope', '$http', function($scope, $http) {
+        $scope.newTodo = '';
+        $scope.todos = <%- todos %>;
+        
+        $scope.add = function() {
+            if (!$scope.newTodo) return;
+            var todo = { title: $scope.newTodo, completed: false };
+            $http.post('/todo', todo).success(function(todo) {
+                $scope.todos.push(todo);
+                $scope.newTodo = '';
+            });
+        }
+        
+        $scope.mark = function(todo) {
+            var data = { completed: !todo.completed }
+            $http.put('/todo/' + todo.id, data).success(function(newTodo) {
+                todo.completed = newTodo.completed;
+            });
+        }
+        
+        $scope.delete = function(todo) {
+            $http.delete('/todo/' + todo.id).success(function(newTodo) {
+                $scope.todos = _.without($scope.todos, todo);
+            });
+        }
+    }]);
+
+    </script>
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .todo {
+            font-size: 20px
+        }
+        
+        .todo:hover {
+            background: #eee
+        }
+        
+        .todo .status {
+            width: 40px
+        }
+        
+        .todo .delete {
+            width: 30px;
+            color: black
+        }
+        
+        .todo .delete:hover {
+            color: red
+        }
+        
+        .todo .fa {
+            cursor: pointer
+        }
+        
+        .todo.completed {
+            text-decoration: line-through;
+            color: #999
+        }
+    </style>
